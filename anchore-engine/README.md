@@ -10,7 +10,6 @@ workflows:
     jobs:
       - anchore/image_scan:
           image_name: anchore/anchore-engine:latest
-          timeout: '300'
 ```
 
 Adding a private image scan job to a CircleCi workflow:
@@ -23,7 +22,6 @@ workflows:
     jobs:
       - anchore/image_scan:
           image_name: anchore/anchore-engine:latest
-          timeout: '300'
           private_registry: True
           registry_name: docker.io
           registry_user: "${DOCKER_USER}"
@@ -45,9 +43,7 @@ jobs:
           command: docker build -t "anchore/anchore-engine:ci" .
       - anchore/analyze_local_image:
           image_name: example/test:latest
-          timeout: '500'
           dockerfile_path: ./Dockerfile
-      - anchore/parse_reports
       - store_artifacts:
           path: anchore-reports
 ```
@@ -69,11 +65,7 @@ jobs:
           command: docker build -t ${CIRCLE_PROJECT_REPONAME}:ci ~/project/src/
       - anchore/analyze_local_image:
           image_name: ${CIRCLE_PROJECT_REPONAME}:ci
-          timeout: '500'
-          policy_failure: True
-          policy_bundle_file_path: .circleci/.anchore/policy_bundle.json
           dockerfile_path: ./Dockerfile
-      - anchore/parse_reports
       - store_artifacts:
           path: anchore-reports
 ```
@@ -97,10 +89,7 @@ jobs:
             docker build -t "example/test:latest" prod/
       - anchore/analyze_local_image:
           image_name: "example/test:dev example/test:staging example/test:latest"
-          timeout: '500'
           policy_failure: True
-          policy_bundle_file_path: .circleci/.anchore/policy_bundle.json
-      - anchore/parse_reports
       - store_artifacts:
           path: anchore-reports
 ```

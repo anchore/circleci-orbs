@@ -1,6 +1,6 @@
 description: |
   Add image to grype and start analyzing.
-  image_name is required, timeout is optional.
+  image_name is required.
 
 parameters:
   image_name:

@@ -30,7 +30,6 @@ jobs:
     - anchore/analyze_local_image:
         image_name: ${CIRCLE_PROJECT_REPONAME}:ci
         dockerfile_path: .circleci/Dockerfile
-        timeout: '500'
     - anchore/parse_reports
     - store_artifacts:
         path: anchore-reports
@@ -48,40 +47,6 @@ jobs:
           docker build -t "${CIRCLE_PROJECT_REPONAME}:fail" -f .circleci/node_critical_fail/Dockerfile .circleci/node_critical_fail/
     - anchore/analyze_local_image:
         image_name: "${CIRCLE_PROJECT_REPONAME}:ci ${CIRCLE_PROJECT_REPONAME}:pass ${CIRCLE_PROJECT_REPONAME}:fail"
-        timeout: '900'
-    - anchore/parse_reports
-    - store_artifacts:
-        path: anchore-reports
-
-  custom_policy_fail:
-    executor: anchore/anchore_engine
-    steps:
-    - setup_remote_docker
-    - checkout
-    - run:
-        name: build container
-        command: docker build -t "${CIRCLE_PROJECT_REPONAME}:policy_fail" -f .circleci/node_critical_fail/Dockerfile .circleci/node_critical_fail/
-    - anchore/analyze_local_image:
-        image_name: ${CIRCLE_PROJECT_REPONAME}:policy_fail
-        timeout: '500'
-        policy_failure: True
-        dockerfile_path: .circleci/node_critical_fail/Dockerfile
-        policy_bundle_file_path: .circleci/.anchore/policy_bundle.json
-
-  custom_policy_pass:
-    executor: anchore/anchore_engine
-    steps:
-    - setup_remote_docker
-    - checkout
-    - run:
-        name: build container
-        command: docker build -t "${CIRCLE_PROJECT_REPONAME}:policy_pass" -f .circleci/node_critical_pass/Dockerfile .circleci/node_critical_pass/
-    - anchore/analyze_local_image:
-        image_name: ${CIRCLE_PROJECT_REPONAME}:policy_pass
-        timeout: '500'
-        policy_failure: True
-        dockerfile_path: .circleci/node_critical_pass/Dockerfile
-        policy_bundle_file_path: .circleci/.anchore/policy_bundle.json
     - anchore/parse_reports
     - store_artifacts:
         path: anchore-reports
@@ -113,8 +78,6 @@ workflows:
       - local_images_scan
       - anchore/image_scan:
           image_name: anchore/anchore-engine:latest
-          policy_bundle_file_path: ''
-          timeout: '1200'
       - anchore/image_scan:
           image_name: gcr.io/testing-214322/alpine-test
           private_registry: true
@@ -125,17 +88,12 @@ workflows:
 
   publish_prod_orb_on_tag:
     jobs:
-      - custom_policy_fail:
-          filters: *filter_release_semver_tags
-      - custom_policy_pass:
-          filters: *filter_release_semver_tags
-      - local_images_scan:
+     - local_images_scan:
           name: local_images_scan
           filters: *filter_release_semver_tags
       - hold_for_approval:
           type: approval
           requires:
-            - custom_policy_pass
             - local_images_scan
           filters: *filter_release_semver_tags
       - orb-tools/dev-promote-prod-from-git-tag:
