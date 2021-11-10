@@ -1,5 +1,3 @@
-version: 2.1
-
 description: |
   Use this job to scan an image located in a public registry.
 

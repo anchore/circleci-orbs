@@ -1,5 +1,3 @@
-version: 2.1
-
 description: |
   Add image to grype and start analyzing.
   image_name is required, timeout is optional.

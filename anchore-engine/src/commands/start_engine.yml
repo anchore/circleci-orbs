@@ -1,5 +1,3 @@
-version: 2.1
-
 description: Start & wait for Anchore Engine
 
 parameters:

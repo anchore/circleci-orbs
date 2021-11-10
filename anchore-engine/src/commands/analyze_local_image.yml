@@ -1,5 +1,3 @@
-version: 2.1
-
 description: |
   Pushes a local image to a temporary registry container.
   Image is then scanned with grype. Stores all reports as artifacts.

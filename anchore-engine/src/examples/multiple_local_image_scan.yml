@@ -1,5 +1,3 @@
-version: 2.1
-
 description: |
   Use the analyze_local_image command within a container build pipeline,
   it can be used to scan multiple images that haven't been pushed to a registry yet.
