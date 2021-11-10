@@ -1,9 +1,8 @@
+version: 2.1
+
 description: |
   Use the analyze_local_image command within a container build pipeline,
   it can be used to scan multiple images that haven't been pushed to a registry yet.
-  If Anchore policy evaluation gives 'fail' status, the CI job will be marked
-  as a failure. A custom policy can be used for evaluation, add custom Anchore
-  policy bundle to .circleci/.anchore/policy_bundle.json in your repository.
   Scanning multiple images does not support passing a dockerfile.
 
 usage:
@@ -25,9 +24,5 @@ usage:
               docker build -t "example/test:latest" prod/
         - anchore/analyze_local_image:
             image_name: 'example/test:dev example/test:staging example/test:latest'
-            timeout: '500'
-            policy_failure: True
-            policy_bundle_file_path: .circleci/.anchore/policy_bundle.json
-        - anchore/parse_reports
         - store_artifacts:
             path: anchore-reports

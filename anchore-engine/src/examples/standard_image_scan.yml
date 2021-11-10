@@ -1,7 +1,7 @@
+version: 2.1
+
 description: |
-  Use this job to scan an image located in a public registry. A custom
-  policy can be used for evaluation, add custom Anchore policy bundle to
-  .circleci/.anchore/policy_bundle.json in your repository.
+  Use this job to scan an image located in a public registry.
 
 usage:
   version: 2.1
@@ -12,6 +12,4 @@ usage:
     scan_image:
       jobs:
         - anchore/image_scan:
-            image_name: docker.io/anchore/anchore-engine:latest
-            timeout: '300'
-            policy_bundle_file_path: .circleci/.anchore/policy_bundle.json
+            image_name: docker.io/anchore/grype:latest
