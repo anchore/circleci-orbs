@@ -1,9 +1,8 @@
 description: |
   Performs a static security analysis of docker container with grype.
-  Grype pulls image from public/private docker registries. Requires 
-  registry credentials to access private images, use ENV vars 
-  $GRYPE_REGISTRY_AUTH_USERNAME
-  $GRYPE_REGISTRY_AUTH_PASSWORD
+  Grype pulls image from public/private docker registries. Requires
+  registry credentials to access private images,
+  use ENV vars $GRYPE_REGISTRY_AUTH_USERNAME and $GRYPE_REGISTRY_AUTH_PASSWORD
 
 executor: anchore_engine
 
