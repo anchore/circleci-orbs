@@ -29,8 +29,6 @@ jobs:
         command: docker build -t "${CIRCLE_PROJECT_REPONAME}:ci" -f .circleci/Dockerfile .
     - anchore/analyze_local_image:
         image_name: ${CIRCLE_PROJECT_REPONAME}:ci
-        dockerfile_path: .circleci/Dockerfile
-    - anchore/parse_reports
     - store_artifacts:
         path: anchore-reports
 

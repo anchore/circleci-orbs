@@ -1,5 +1,5 @@
 description: |
-  Docker stable image with ANCHORE_VERSION environment variable set.
+  Docker stable image with GRYPE_VERSION environment variable set.
 
 environment:
   ANCHORE_VERSION: v0.10.2

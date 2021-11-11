@@ -1,5 +1,5 @@
 description: |
-  Add image to grype and start analyzing.
+  Analyze an image with grype.
   image_name is required.
 
 parameters:
@@ -10,6 +10,21 @@ parameters:
     description: report output formatter, formats=[json table cyclonedx template]
     type: string
     default: 'json'
+  registry_name:
+    description: Name of private registry (eg - docker.io).
+    type: string
+    default: $GRYPE_REGISTRY_AUTH_AUTHORITY
+  registry_user:
+    description: Username for private registry (use env var to populate).
+    type: string
+    default: $GRYPE_REGISTRY_AUTH_USERNAME
+  registry_pass:
+    description: Password for private registry (use env var to populate).
+    type: string
+    default: $GRYPE_REGISTRY_AUTH_PASSWORD
+  registry_auth_token:
+    type: string
+    default: $GRYPE_REGISTRY_AUTH_TOKEN
 
 steps:
   - run:
@@ -17,5 +32,9 @@ steps:
       command: |
         IMAGE_NAME="<< parameters.image_name >>"
         OUTPUT_FORMAT=<<parameters.output_format>>
-        docker exec -e IMAGE_NAME="$IMAGE_NAME" -e OUTPUT_FORMAT="$OUTPUT_FORMAT" -it grype bash -lc 'grype "$IMAGE_NAME" -o "$OUTPUT_FORMAT"'
+        GRYPE_REGISTRY_AUTH_AUTHORITY="<< parameters.registry_name >>"
+        GRYPE_REGISTRY_AUTH_USERNAME="<< parameters.registry_user >>"
+        GRYPE_REGISTRY_AUTH_PASSWORD="<< parameters.registry_pass >>"
+        GRYPE_REGISTRY_AUTH_TOKEN="<< parameters.registry_auth_token >>"
+        docker exec -e GRYPE_REGISTRY_AUTH_AUTHORITY="$GRYPE_REGISTRY_AUTH_AUTHORITY" -e GRYPE_REGISTRY_AUTH_USERNAME="$GRYPE_REGISTRY_AUTH_USERNAME" -e GRYPE_REGISTRY_AUTH_PASSWORD="$GRYPE_REGISTRY_AUTH_PASSWORD" -e GRYPE_REGISTRY_AUTH_TOKEN="$GRYPE_REGISTRY_AUTH_TOKEN" -e IMAGE_NAME="$IMAGE_NAME" -e OUTPUT_FORMAT="$OUTPUT_FORMAT" -it grype bash -lc 'grype "$IMAGE_NAME" -o "$OUTPUT_FORMAT"'
         docker cp grype:/grype/reports/ ./

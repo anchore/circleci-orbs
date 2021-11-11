@@ -1,9 +1,9 @@
 description: |
-  Performs a static security analysis of docker container with anchore engine.
-  A custom policy can be used for evaluation, add custom Anchore policy bundle
-  to .circleci/.anchore/policy_bundle.json in your repository. Anchore engine pulls
-  image from public/private docker registries. Requires registry credentials
-  to access private images, use ENV vars $DOCKER_USER & $DOCKER_PASS
+  Performs a static security analysis of docker container with grype.
+  Grype pulls image from public/private docker registries. Requires 
+  registry credentials to access private images, use ENV vars 
+  $GRYPE_REGISTRY_AUTH_USERNAME
+  $GRYPE_REGISTRY_AUTH_PASSWORD
 
 executor: anchore_engine
 
@@ -23,22 +23,18 @@ parameters:
   image_name:
     description: Image repository & tag (eg - docker.io/anchore/anchore-engine:latest).
     type: string
- private_registry:
-    description: Set to True if image is only accessible from a private registry.
-    type: boolean
-    default: False
   registry_name:
     description: Name of private registry (eg - docker.io)
     type: string
     default: docker.io
   registry_user:
-    description: Username for private registry (use env var $DOCKER_USER to populate).
+    description: Username for private registry (use env var $GRYPE_REGISTRY_AUTH_USERNAME to populate).
     type: string
-    default: $DOCKER_USER
+    default: $GRYPE_REGISTRY_AUTH_USERNAME
   registry_pass:
-    description: Password for private registry (use env var $DOCKER_PASS to populate).
+    description: Password for private registry (use env var $GRYPE_REGISTRY_AUTH_PASSWORD to populate).
     type: string
-    default: $DOCKER_PASS
+    default: $GRYPE_REGISTRY_AUTH_PASSWORD
 
 steps:
   - setup_remote_docker:
@@ -53,19 +49,14 @@ steps:
       name: Run before_analyze life cycle hook steps.
       condition: << parameters.before_analyze >>
       steps: << parameters.before_analyze >>
-  - when:
-      condition: << parameters.private_registry >>
-      steps:
-        - add_private_registry:
-            registry_name: << parameters.registry_name >>
-            registry_user: << parameters.registry_user >>
-            registry_pass: << parameters.registry_pass >>
   - analyze_image:
+      registry_name: << parameters.registry_name >>
+      registry_user: << parameters.registry_user >>
+      registry_pass: << parameters.registry_pass >>
       image_name: << parameters.image_name >>
   - when:
       name: Run after_analyze life cycle hook steps.
       condition: << parameters.after_analyze >>
       steps: << parameters.after_analyze >>
-  - parse_reports
   - store_artifacts:
-      path: anchore-reports
+      path: grype-reports

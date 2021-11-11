@@ -8,10 +8,6 @@ parameters:
     description: Version of grype image.
     type: string
     default: latest
-  dockerfile_path:
-    description: Path to dockerfile used to build image
-    type: string
-    default: ''
   image_name:
     description: Image repository & tag (eg - "docker.io/anchore/grype:latest").
     type: string
@@ -20,17 +16,8 @@ steps:
   - run:
       name: Scan local image.
       command: |
-        if [[ ! $(which bash) ]]; then
-          (set +o pipefail; apk add bash || apt-get install -y bash || yum install -y bash)
-        fi
-       GRYPE_VERSION="<< parameters.grype_version >>"
-        DOCKERFILE_PATH="<< parameters.dockerfile_path >>"
+        GRYPE_VERSION="<< parameters.grype_version >>"
         IMAGE_NAME="<< parameters.image_name >>"
-       if [[ ! -z $DOCKERFILE_PATH ]] && [[ -f $DOCKERFILE_PATH ]]; then
-          run_cmd="$run_cmd -d $DOCKERFILE_PATH"
-        else
-          echo "ERROR - could not find Dockerfile $DOCKERFILE_PATH - Dockerfile not included in scan."
-        fi
-        run_cmd="$run_cmd $IMAGE_NAME"
-        docker pull docker.io/anchore/inline-scan:${ANCHORE_VERSION}
+        run_cmd="grype $IMAGE_NAME"
+        docker pull docker.io/anchore/grype:${GRYPE_VERSION}
         eval "$run_cmd"
