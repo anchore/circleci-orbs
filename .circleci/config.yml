@@ -86,7 +86,7 @@ workflows:
 
   publish_prod_orb_on_tag:
     jobs:
-     - local_images_scan:
+      - local_images_scan:
           name: local_images_scan
           filters: *filter_release_semver_tags
       - hold_for_approval:
