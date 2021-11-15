@@ -19,5 +19,6 @@ usage:
             command: docker build -t "example/test:latest" .
         - anchore/analyze_local_image:
             image_name: example/test:latest
+        - anchore/parse_reports
         - store_artifacts:
             path: anchore-reports

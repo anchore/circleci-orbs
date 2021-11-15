@@ -66,6 +66,7 @@ jobs:
       - anchore/analyze_local_image:
           image_name: ${CIRCLE_PROJECT_REPONAME}:ci
           dockerfile_path: ./Dockerfile
+      - anchore/parse_reports
       - store_artifacts:
           path: anchore-reports
 ```
@@ -90,6 +91,7 @@ jobs:
       - anchore/analyze_local_image:
           image_name: "example/test:dev example/test:staging example/test:latest"
           policy_failure: True
+      - anchore/parse_reports
       - store_artifacts:
           path: anchore-reports
 ```

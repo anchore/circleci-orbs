@@ -22,5 +22,6 @@ usage:
               docker build -t "example/test:latest" prod/
         - anchore/analyze_local_image:
             image_name: 'example/test:dev example/test:staging example/test:latest'
+        - anchore/parse_reports
         - store_artifacts:
             path: anchore-reports

@@ -57,5 +57,6 @@ steps:
       name: Run after_analyze life cycle hook steps.
       condition: << parameters.after_analyze >>
       steps: << parameters.after_analyze >>
+  - parse_reports
   - store_artifacts:
       path: grype-reports
