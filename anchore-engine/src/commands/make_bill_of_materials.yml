@@ -31,5 +31,11 @@ steps:
         SYFT_REGISTRY_AUTH_PASSWORD="<< parameters.registry_pass >>"
         SYFT_REGISTRY_AUTH_TOKEN="<< parameters.registry_auth_token >>"
         mkdir -p /syft/reports/
-        docker exec -e SYFT_REGISTRY_AUTH_AUTHORITY="$SYFT_REGISTRY_AUTH_AUTHORITY" -e SYFT_REGISTRY_AUTH_USERNAME="$SYFT_REGISTRY_AUTH_USERNAME" -e SYFT_REGISTRY_AUTH_PASSWORD="$SYFT_REGISTRY_AUTH_PASSWORD" -e SYFT_REGISTRY_AUTH_TOKEN="$SYFT_REGISTRY_AUTH_TOKEN" -e IMAGE_NAME="$IMAGE_NAME" -it syft "$IMAGE_NAME" -o json > /syft/reports/
+        docker exec
+        -e SYFT_REGISTRY_AUTH_AUTHORITY="$SYFT_REGISTRY_AUTH_AUTHORITY" \
+        -e SYFT_REGISTRY_AUTH_USERNAME="$SYFT_REGISTRY_AUTH_USERNAME" \
+        -e SYFT_REGISTRY_AUTH_PASSWORD="$SYFT_REGISTRY_AUTH_PASSWORD" \
+        -e SYFT_REGISTRY_AUTH_TOKEN="$SYFT_REGISTRY_AUTH_TOKEN" \
+        -e IMAGE_NAME="$IMAGE_NAME" \
+        -it syft "$IMAGE_NAME" -o json > /syft/reports/
         docker cp grype:/syft/reports/ ./

@@ -32,5 +32,11 @@ steps:
         GRYPE_REGISTRY_AUTH_PASSWORD="<< parameters.registry_pass >>"
         GRYPE_REGISTRY_AUTH_TOKEN="<< parameters.registry_auth_token >>"
         mkdir -p /grype/reports/
-        docker exec -e GRYPE_REGISTRY_AUTH_AUTHORITY="$GRYPE_REGISTRY_AUTH_AUTHORITY" -e GRYPE_REGISTRY_AUTH_USERNAME="$GRYPE_REGISTRY_AUTH_USERNAME" -e GRYPE_REGISTRY_AUTH_PASSWORD="$GRYPE_REGISTRY_AUTH_PASSWORD" -e GRYPE_REGISTRY_AUTH_TOKEN="$GRYPE_REGISTRY_AUTH_TOKEN" -e IMAGE_NAME="$IMAGE_NAME" -it grype bash -lc 'grype "$IMAGE_NAME" -o json > /grype/reports/'
+        docker exec \
+        -e GRYPE_REGISTRY_AUTH_AUTHORITY="$GRYPE_REGISTRY_AUTH_AUTHORITY" \
+        -e GRYPE_REGISTRY_AUTH_USERNAME="$GRYPE_REGISTRY_AUTH_USERNAME" \
+        -e GRYPE_REGISTRY_AUTH_PASSWORD="$GRYPE_REGISTRY_AUTH_PASSWORD" \
+        -e GRYPE_REGISTRY_AUTH_TOKEN="$GRYPE_REGISTRY_AUTH_TOKEN" \
+        -e IMAGE_NAME="$IMAGE_NAME" \
+        -it grype bash -lc 'grype "$IMAGE_NAME" -o json > /grype/reports/'
         docker cp grype:/grype/reports/ ./
