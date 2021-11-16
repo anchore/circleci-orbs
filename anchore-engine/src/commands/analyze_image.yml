@@ -6,10 +6,6 @@ parameters:
   image_name:
     description: Image repository & tag (eg - "docker.io/anchore/grype:latest").
     type: string
-  output_format:
-    description: report output formatter, formats=[json table cyclonedx template]
-    type: string
-    default: 'json'
   registry_name:
     description: Name of private registry (eg - docker.io).
     type: string
@@ -31,10 +27,10 @@ steps:
       name: Analyze image with anchore engine.
       command: |
         IMAGE_NAME="<< parameters.image_name >>"
-        OUTPUT_FORMAT=<<parameters.output_format>>
         GRYPE_REGISTRY_AUTH_AUTHORITY="<< parameters.registry_name >>"
         GRYPE_REGISTRY_AUTH_USERNAME="<< parameters.registry_user >>"
         GRYPE_REGISTRY_AUTH_PASSWORD="<< parameters.registry_pass >>"
         GRYPE_REGISTRY_AUTH_TOKEN="<< parameters.registry_auth_token >>"
-        docker exec -e GRYPE_REGISTRY_AUTH_AUTHORITY="$GRYPE_REGISTRY_AUTH_AUTHORITY" -e GRYPE_REGISTRY_AUTH_USERNAME="$GRYPE_REGISTRY_AUTH_USERNAME" -e GRYPE_REGISTRY_AUTH_PASSWORD="$GRYPE_REGISTRY_AUTH_PASSWORD" -e GRYPE_REGISTRY_AUTH_TOKEN="$GRYPE_REGISTRY_AUTH_TOKEN" -e IMAGE_NAME="$IMAGE_NAME" -e OUTPUT_FORMAT="$OUTPUT_FORMAT" -it grype bash -lc 'grype "$IMAGE_NAME" -o "$OUTPUT_FORMAT"'
+        mkdir -p /grype/reports/
+        docker exec -e GRYPE_REGISTRY_AUTH_AUTHORITY="$GRYPE_REGISTRY_AUTH_AUTHORITY" -e GRYPE_REGISTRY_AUTH_USERNAME="$GRYPE_REGISTRY_AUTH_USERNAME" -e GRYPE_REGISTRY_AUTH_PASSWORD="$GRYPE_REGISTRY_AUTH_PASSWORD" -e GRYPE_REGISTRY_AUTH_TOKEN="$GRYPE_REGISTRY_AUTH_TOKEN" -e IMAGE_NAME="$IMAGE_NAME" -it grype bash -lc 'grype "$IMAGE_NAME" -o json > /grype/reports/'
         docker cp grype:/grype/reports/ ./

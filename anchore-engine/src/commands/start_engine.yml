@@ -5,11 +5,16 @@ parameters:
     description: Version of grype image.
     type: string
     default: latest
+  syft_version:
+    description: Version of syft image.
+    type: string
+    default: latest
 
 steps:
   - run:
       name: Start Anchore Engine
       command: |
         GRYPE_VERSION="<< parameters.grype_version >>"
+        SYFT_VERSION="<< parameters.syft_version >>"
         docker pull "docker.io/anchore/grype:${GRYPE_VERSION}"
-        docker run -d --name grype "docker.io/anchore/grype:${GRYPE_VERSION}" start
+        docker pull "docker.io/anchore/syft:${SYFT_VERSION}"

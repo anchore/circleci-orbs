@@ -1,0 +1,35 @@
+description: |
+  Make bill of materials for a given docker image using syft.
+
+parameters:
+  image_name:
+    description: Image repository & tag (e - "docker.io/anchore/syft:latest)
+    type: string
+  registry_name:
+    description: Name of private registry (eg - docker.io).
+    type: string
+    default: $SYFT_REGISTRY_AUTH_AUTHORITY
+  registry_user:
+    description: Username for private registry (use env var to populate).
+    type: string
+    default: $SYFT_REGISTRY_AUTH_USERNAME
+  registry_pass:
+    description: Password for private registry (use env var to populate).
+    type: string
+    default: $SYFT_REGISTRY_AUTH_PASSWORD
+  registry_auth_token:
+    type: string
+    default: $SYFT_REGISTRY_AUTH_TOKEN
+
+steps:
+  - run:
+      name: Make bill of materials for image with syft.
+      command: |
+        IMAGE_NAME="<< parameters.image_name >>"
+        SYFT_REGISTRY_AUTH_AUTHORITY="<< parameters.registry_name >>"
+        SYFT_REGISTRY_AUTH_USERNAME="<< parameters.registry_user >>"
+        SYFT_REGISTRY_AUTH_PASSWORD="<< parameters.registry_pass >>"
+        SYFT_REGISTRY_AUTH_TOKEN="<< parameters.registry_auth_token >>"
+        mkdir -p /syft/reports/
+        docker exec -e SYFT_REGISTRY_AUTH_AUTHORITY="$SYFT_REGISTRY_AUTH_AUTHORITY" -e SYFT_REGISTRY_AUTH_USERNAME="$SYFT_REGISTRY_AUTH_USERNAME" -e SYFT_REGISTRY_AUTH_PASSWORD="$SYFT_REGISTRY_AUTH_PASSWORD" -e SYFT_REGISTRY_AUTH_TOKEN="$SYFT_REGISTRY_AUTH_TOKEN" -e IMAGE_NAME="$IMAGE_NAME" -it syft "$IMAGE_NAME" -o json > /syft/reports/
+        docker cp grype:/syft/reports/ ./
