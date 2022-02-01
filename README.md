@@ -1,3 +1,4 @@
+# Use the new [Grype Orb](https://github.com/anchore/circleci-orb-grype). This orb is deprecated and no longer gets updated vulnerability data. 
 # Anchore CircleCi Orbs [![CircleCI](https://circleci.com/gh/anchore/circleci-orbs/tree/master.svg?style=svg)](https://circleci.com/gh/anchore/circleci-orbs/tree/master)
 
 All orbs are tested with .circleci/config.yaml of this repo. Finished orbs will be published to the public CircleCi orb repository under the anchore namespace.
